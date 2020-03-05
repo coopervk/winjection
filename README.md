@@ -1,7 +1,5 @@
 # Winjection - Windows process manipulation and code execution techniques
 
----
-
 ## Background
 
 By using a multitude of sources, we can study, understand, and develop techniques to manipulate processes on Windows into running our code or control the execution of an already existing process.
@@ -24,5 +22,3 @@ Current sources include:
   + Raymond Chen
     * Understanding default security descriptors: https://devblogs.microsoft.com/oldnewthing/20040312-00/?p=40273
     * Blog is rich of very useful information, but many links are old and broken. Better to Google dork than click the links.
-
----

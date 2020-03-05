@@ -1,5 +1,3 @@
----
-
 # CreateRemoteThread
 
 Accompanying program: CreateRemoteThread\CreateRemoteThread.vbs
@@ -37,5 +35,3 @@ Other parameters for CreateRemoteThread include:
 See Raymond Chen "Understanding defualt security descriptors" in sources.
 
 While creating the remote thread is the kicker,
-
----
