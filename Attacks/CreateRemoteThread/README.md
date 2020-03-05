@@ -34,4 +34,10 @@ Other parameters for CreateRemoteThread include:
   +  A pointer to the application's (shellcode's) LPTHREAD_START_ROUTINE
 See Raymond Chen "Understanding defualt security descriptors" in sources.
 
-While creating the remote thread is the kicker,
+## Notes
+
+While creating the remote thread is the kicker, just remember to understand the other basic Windows API calls as well:
+- OpenProcess(): https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
+- VirtualAllocEx(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex
+- WriteProcessMemory(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
+- CloseHandle(): https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
