@@ -18,8 +18,5 @@
     <ClCompile Include="attacks\createremotethread\CreateRemoteThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Payloads\ReverseShell.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
