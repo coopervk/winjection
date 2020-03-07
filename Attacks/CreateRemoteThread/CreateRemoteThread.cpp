@@ -51,8 +51,15 @@ int main(int argc, char *argv[]) {
     HANDLE processHandle;
     HANDLE remoteThread;
     PVOID remoteBuffer;
+    DWORD pid;
+
+    // Get a PID, error out if improper input for PID
+    if(!argv[1] || !(pid=atoi(argv[1]))) {
+        printf("No PID was supplied. Exiting.\n");
+        return -1;
+    }
  
-    printf("Target PID: %d\n", atoi(argv[1]));
+    printf("Target PID: %d\n", pid);
 
     return 0;
 }
