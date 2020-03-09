@@ -12,7 +12,7 @@ By creating a thread and mapping shellcode into the memory of another process us
 4. CreateRemoteThread(): Create a thread on the remote process which begins execution at your shellcode.
 5. WaitForSingleObject(): Wait for the thread to complete
 6. VirtualAllocFreeEx(): Free the memory we allocated in the remote process since we no longer need it
-5. CloseHandle(): Close the handle we had to the object since we no longer need it
+7. CloseHandle(): Close the handle we had to the object since we no longer need it
 
 ## Details
 
