@@ -10,7 +10,9 @@ By creating a thread and mapping shellcode into the memory of another process us
 2. VirtualAllocEx(): Allocate memory in the target process for your shellcode
 3. WriteProcessMemory(): Map the shellcode into the memory you allocated in step 2
 4. CreateRemoteThread(): Create a thread on the remote process which begins execution at your shellcode.
-5. CloseHandle(): Optional, good practice. 
+5. WaitForSingleObject(): Wait for the thread to complete
+6. VirtualAllocFreeEx(): Free the memory we allocated in the remote process since we no longer need it
+5. CloseHandle(): Close the handle we had to the object since we no longer need it
 
 ## Details
 
@@ -40,4 +42,6 @@ While creating the remote thread is the kicker, just remember to understand the 
 - OpenProcess(): https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
 - VirtualAllocEx(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex
 - WriteProcessMemory(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
+- WaitForSingleObject(): https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+- VirtualAllocFreeEx(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfreeex
 - CloseHandle(): https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle

