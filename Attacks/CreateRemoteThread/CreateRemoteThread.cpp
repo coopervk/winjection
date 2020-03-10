@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
     }
 
     // For debug: inject into myself
-    //pid = GetCurrentProcessId();
+    pid = GetCurrentProcessId();
 
     // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
     processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);                                                            // Open the process with enough permission to create a remote thread
