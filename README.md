@@ -22,3 +22,10 @@ Current sources include:
   + Raymond Chen
     * Understanding default security descriptors: https://devblogs.microsoft.com/oldnewthing/20040312-00/?p=40273
     * Blog is rich of very useful information, but many links are old and broken. Better to Google dork than click the links.
+
+## Miscellaneous Details & Advice
+- MSFVenom shellcode doesn't include a method of "returning" from itself, so by default it will not work properly in its own thread
+- You can install WinDBG Preview by (https://www.thewindowsclub.com/generate-direct-download-links-for-microsoft-store-apps):
+  + Grabbing the APPX (https://store.rg-adguard.net/)
+  + MAYBE need to enable developer mode or sideloading apps
+  + Install the APPX with Add-AppxPackage
