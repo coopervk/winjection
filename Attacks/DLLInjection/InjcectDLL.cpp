@@ -30,20 +30,12 @@ int main(int argc, char *argv[]) {
 
     // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
     processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    printf("Process handle: %p\n", processHandle);
     remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof dllPath, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-    printf("Remote buffer : %p\n", remoteBuffer);
-    int temp = WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
-    printf("Wrote memory  : %d\n", temp);
+    WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
-    printf("Thread address: %p\n", threadStartRoutineAddress);
     remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
-    printf("Remote address: %d\n", remoteThread);
-    temp = WaitForSingleObject(remoteThread, INFINITE);
-    printf("Waited        : %d\n", temp);
-    temp = VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
-    printf("Freed         : %d\n", temp);
-    printf("Last error    : %d\n", GetLastError());
+    WaitForSingleObject(remoteThread, INFINITE);
+    VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
     CloseHandle(processHandle);
 
     return 0;
