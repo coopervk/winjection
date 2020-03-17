@@ -33,8 +33,11 @@ int main(int argc, char *argv[]) {
     remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof dllPath, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
-    remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
-    WaitForSingleObject(remoteThread, INFINITE);
+    int temp = (threadStartRoutineAddress)(remoteBuffer);
+    printf("LoadLib ret: %d\n", temp);
+    printf("err: %d\n", GetLastError());
+    //remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
+    //WaitForSingleObject(remoteThread, INFINITE);
     VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
     CloseHandle(processHandle);
 
