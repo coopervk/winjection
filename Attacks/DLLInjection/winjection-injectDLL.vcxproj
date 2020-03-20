@@ -143,6 +143,7 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include="reverse.dll" />
+    <None Include="test.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
