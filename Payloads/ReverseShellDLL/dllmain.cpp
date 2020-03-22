@@ -68,7 +68,9 @@ int shell(LPWSTR server, unsigned int port) {
 
     // Catchall, remove later
     //* https://docs.microsoft.com/en-us/cpp/code-quality/c6335?view=vs-2019
+    WaitForSingleObject(pinfo.hProcess, INFINITE);
     CloseHandle(pinfo.hProcess);
+    CloseHandle(pinfo.hThread);
 }
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
