@@ -8,21 +8,21 @@ By creating our own DLL, we can have greater control over debugging issues in at
 
 On a high level, what we are doing is:
 1. Initializing winsock
-  - WSAStartup
+  - WSAStartup()
 2. Creating and configuring a socket and connection details
-  - WSASocket
+  - WSASocket()
   - Filling out the sockaddr_in struct
 3. Connecting to the remote server which we want to give a shell to
-  - WSAConnect
+  - WSAConnect()
 4. Creating a process which is a shell, and whose I/O goes over the socket we created (allowing for the remote control)
   - Filling out specialized startup info and process info
-  - CreateProcess
+  - CreateProcess()
 5. Waiting for the shell to close
-  - WaitForSingleObject
+  - WaitForSingleObject()
 6. Cleaning up after ourselves
   - Closing the handles to the remote process and its thread
   - Closing the socket
-  - WSACleanup
+  - WSACleanup()
 
 ## Notes
 By mixing and matching existing code, fixing compiler errors, and testing the code, we can create our very own payload from scratch.
