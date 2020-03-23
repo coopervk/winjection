@@ -1,4 +1,4 @@
-# CreateRemoteThread
+# Reverse shell DLL
 
 Accompanying program: dllmain.cpp
 
