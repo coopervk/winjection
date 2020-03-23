@@ -37,6 +37,7 @@ If you want to get more into the actual implementation details and Windows inter
 - WSAConnect(): https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsaconnect
 - STARTUPINFO struct: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
 - PROCESS_INFORMATION struct: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information
+- CreateProcess(): https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa
 - WaitForSingleObject(): https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 - CloseHandle(): https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
 - closesocket(): https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-closesocket
