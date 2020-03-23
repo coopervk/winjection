@@ -1,18 +1,28 @@
 # CreateRemoteThread
 
-Accompanying program: CreateRemoteThread\CreateRemoteThread.vbs
+Accompanying program: dllmain.cpp
 
 ## Overview
 
-By creating a thread and mapping shellcode into the memory of another process using standard WinAPI functions, we can execute arbitrary shellcode as another process given that we have proper permissions to said process.
+By creating our own DLL, we can have greater control over debugging issues in attacks such as DLL injection.
 
-1. OpenProcess(): Open a handle to the target process
-2. VirtualAllocEx(): Allocate memory in the target process for your shellcode
-3. WriteProcessMemory(): Map the shellcode into the memory you allocated in step 2
-4. CreateRemoteThread(): Create a thread on the remote process which begins execution at your shellcode.
-5. WaitForSingleObject(): Wait for the thread to complete
-6. VirtualAllocFreeEx(): Free the memory we allocated in the remote process since we no longer need it
-7. CloseHandle(): Close the handle we had to the object since we no longer need it
+On a high level, what we are doing is:
+1. Initializing winsock
+  - WSAStartup
+2. Creating and configuring a socket and connection details
+  - WSASocket
+  - Filling out the sockaddr_in struct
+3. Connecting to the remote server which we want to give a shell to
+  - WSAConnect
+4. Creating a process which is a shell, and whose I/O goes over the socket we created (allowing for the remote control)
+  - Filling out specialized startup info and process info
+  - CreateProcess
+5. Waiting for the shell to close
+  - WaitForSingleObject
+6. Cleaning up after ourselves
+  - Closing the handles to the remote process and its thread
+  - Closing the socket
+  - WSACleanup
 
 ## Details
 
