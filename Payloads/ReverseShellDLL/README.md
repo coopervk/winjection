@@ -24,34 +24,21 @@ On a high level, what we are doing is:
   - Closing the socket
   - WSACleanup
 
-## Details
-
-CreateRemoteThread is a WinAPI function which creates a thread which runs in the virtual address space of another process.
-This is done with the handle of the other process, which requires one to have the correct rights:
-1. PROCESS_CREATE_THREAD
-2. PROCESS_QUERY_INFORMATION
-3. PROCESS_VM_OPERATION
-4. PROCESS_VM_WRITE
-5. PROCESS_VM_READ
-
-Other parameters for CreateRemoteThread include:
-- lpThreadAttributes
-  + For specifying a security descriptor for the new thread and whether child processes inherit the returned handle
-  + By default (NULL), you get a default security descriptor and the handle is not inheritble by child processes.
-    * The default security descriptor is the Access Control Entries which are inheritable if in a hierarchy
-    * Otherwise from the primary or impersonation token of the creator, which is allow generic all to own process and allow generic all to local system
-- dwStackSize
-  + The initial size of the stack in bytes (automatically page rounded), with 0 as a default.
-- lpStartAddress
-  +  A pointer to the application's (shellcode's) LPTHREAD_START_ROUTINE
-See Raymond Chen "Understanding defualt security descriptors" in sources.
-
 ## Notes
+By mixing and matching existing code, fixing compiler errors, and testing the code, we can create our very own payload from scratch.
 
-While creating the remote thread is the kicker, just remember to understand the other basic Windows API calls as well:
-- OpenProcess(): https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
-- VirtualAllocEx(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex
-- WriteProcessMemory(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
+If you want to get more into the actual implementation details and Windows internals (which I recommend), here are the relevant MSDN links:
+- WSAStartup(): https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-wsastartup
+- WSASocket(): https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketa
+- sockaddr/sockaddr_in struct: https://docs.microsoft.com/en-us/windows/win32/winsock/sockaddr-2
+- in_addr struct (part of sockaddr_in): https://docs.microsoft.com/en-us/windows/win32/api/winsock2/ns-winsock2-in_addr
+- Converting text IPv4 address into binary representation (for sockaddr_in.sin_addr): https://docs.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-inetptonw
+- htons(): https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-htons
+- WSAConnect(): https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsaconnect
+- STARTUPINFO struct: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
+- PROCESS_INFORMATION struct: https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information
 - WaitForSingleObject(): https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
-- VirtualAllocFreeEx(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfreeex
 - CloseHandle(): https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+- closesocket(): https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-closesocket
+- WSACleanup(): https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-wsacleanup
+- Working with strings: https://docs.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings
