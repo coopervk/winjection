@@ -43,3 +43,7 @@ If you want to get more into the actual implementation details and Windows inter
 - closesocket(): https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-closesocket
 - WSACleanup(): https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-wsacleanup
 - Working with strings: https://docs.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings
+
+I got some assistance in writing this DLL through these two sources:
+-https://github.com/dev-frog/C-Reverse-Shell/blob/master/re.cpp
+-https://www.winsocketdotnetworkprogramming.com/winsock2programming/winsock2advancedcode1d.html
