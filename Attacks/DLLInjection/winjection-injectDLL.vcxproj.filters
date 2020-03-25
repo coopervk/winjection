@@ -23,12 +23,6 @@
     <None Include="README.md">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="reverse.dll">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="test.dll">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="winjection-reverseshelldll.dll">
       <Filter>Source Files</Filter>
     </None>
