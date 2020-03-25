@@ -28,17 +28,25 @@ int main(int argc, char *argv[]) {
     }
 
     // For debug: inject into myself
-    pid = GetCurrentProcessId();
+    //pid = GetCurrentProcessId();
 
     // Potentially won't work if cannot access process, can't allocate space in it, etc. (No error checking)
     processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    printf("err: %d\n", GetLastError());
     remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof dllPath, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    printf("err: %d\n", GetLastError());
     WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
+    printf("err: %d\n", GetLastError());
     PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
+    printf("err: %d\n", GetLastError());
     remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
+    printf("err: %d\n", GetLastError());
     WaitForSingleObject(remoteThread, INFINITE);
+    printf("err: %d\n", GetLastError());
     VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
+    printf("err: %d\n", GetLastError());
     CloseHandle(processHandle);
+    printf("err: %d\n", GetLastError());
     
     return 0;
 }
