@@ -16,7 +16,6 @@ int main(int argc, char *argv[]) {
 
     // Reverse shell to 127.0.0.1:31337
     // Written from scratch, check the Payloads directory of Winjection
-    // Can test with rundll32.exe reverse.dll,DllMain
     wchar_t dllPath[] = TEXT("E:\\Exclusion Zone\\winjection\\Attacks\\DLLInjection\\winjection-reverseshelldll.dll");
 
     // Get a PID, error out if improper input for PID
