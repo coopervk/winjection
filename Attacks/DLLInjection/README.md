@@ -1,47 +1,35 @@
-# CreateRemoteThread
+# DLL Injection
 
-Accompanying program: CreateRemoteThread\CreateRemoteThread.vbs
+Accompanying program: InjectDLL.cpp
 
 ## Overview
 
-By creating a thread and mapping shellcode into the memory of another process using standard WinAPI functions, we can execute arbitrary shellcode as another process given that we have proper permissions to said process.
+By calling LoadLibrary in a remote process we can force it to load a DLL and execute it.
 
 1. OpenProcess(): Open a handle to the target process
-2. VirtualAllocEx(): Allocate memory in the target process for your shellcode
-3. WriteProcessMemory(): Map the shellcode into the memory you allocated in step 2
-4. CreateRemoteThread(): Create a thread on the remote process which begins execution at your shellcode.
-5. WaitForSingleObject(): Wait for the thread to complete
-6. VirtualAllocFreeEx(): Free the memory we allocated in the remote process since we no longer need it
-7. CloseHandle(): Close the handle we had to the object since we no longer need it
+2. VirtualAllocEx(): Allocate memory in the target process for a call to LoadLibrary
+3. WriteProcessMemory(): Write the path of the DLL to be injected into the allocated space
+4. GetProcAddress(GetModuleHandle()): Get the address of the wide version of LoadLibrary, LoadLibraryW, and cast it to a PThread start routine for execution
+5. CreateRemoteThread(): Create a thread on the remote process which invokes LoadLibraryW on the path of the DLL
+6. WaitForSingleObject(): Wait for the thread to complete (DLL to fully load)
+7. VirtualAllocFreeEx(): Free the memory we allocated in the remote process since we no longer need it
+8. CloseHandle(): Close the handle we had to the object since we no longer need it
 
 ## Details
 
-CreateRemoteThread is a WinAPI function which creates a thread which runs in the virtual address space of another process.
-This is done with the handle of the other process, which requires one to have the correct rights:
-1. PROCESS_CREATE_THREAD
-2. PROCESS_QUERY_INFORMATION
-3. PROCESS_VM_OPERATION
-4. PROCESS_VM_WRITE
-5. PROCESS_VM_READ
-
-Other parameters for CreateRemoteThread include:
-- lpThreadAttributes
-  + For specifying a security descriptor for the new thread and whether child processes inherit the returned handle
-  + By default (NULL), you get a default security descriptor and the handle is not inheritble by child processes.
-    * The default security descriptor is the Access Control Entries which are inheritable if in a hierarchy
-    * Otherwise from the primary or impersonation token of the creator, which is allow generic all to own process and allow generic all to local system
-- dwStackSize
-  + The initial size of the stack in bytes (automatically page rounded), with 0 as a default.
-- lpStartAddress
-  +  A pointer to the application's (shellcode's) LPTHREAD_START_ROUTINE
-See Raymond Chen "Understanding defualt security descriptors" in sources.
+This is particularly similar to the direct shellcode attack in the previous CreateRemoteThread attack.
+The key difference is that we are loading an entire DLL rather than just executing some premade shellcode.
+This is particularly useful considering we can write real code that can execute different, specific code in different contexts, such as every time a new thread starts in the process, just when loading the DLL, etc.
+This makes DLL injection a slightly more sophisticated, customizable attack, suitable for everything from basic game hacks to password stealing.
 
 ## Notes
 
-While creating the remote thread is the kicker, just remember to understand the other basic Windows API calls as well:
+Always know your Windows API calls!
 - OpenProcess(): https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
 - VirtualAllocEx(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex
 - WriteProcessMemory(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory
+- GetProcAddress(): https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress
+- GetModuleHandle(): https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandlea
 - WaitForSingleObject(): https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
 - VirtualAllocFreeEx(): https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfreeex
 - CloseHandle(): https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
