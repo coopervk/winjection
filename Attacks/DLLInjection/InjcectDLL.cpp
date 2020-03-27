@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
     processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     remoteBuffer = VirtualAllocEx(processHandle, NULL, sizeof dllPath, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     WriteProcessMemory(processHandle, remoteBuffer, (LPVOID)dllPath, sizeof dllPath, NULL);
-    PTHREAD_START_ROUTINE threadStartRoutineAddress = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
-    remoteThread = CreateRemoteThread(processHandle, NULL, 0, threadStartRoutineAddress, remoteBuffer, 0, NULL);
+    PTHREAD_START_ROUTINE LoadLibraryW_addr = (PTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
+    remoteThread = CreateRemoteThread(processHandle, NULL, 0, LoadLibraryW_addr, remoteBuffer, 0, NULL);
     WaitForSingleObject(remoteThread, INFINITE);
     VirtualFreeEx(processHandle, remoteBuffer, NULL, MEM_RELEASE);
     CloseHandle(processHandle);
