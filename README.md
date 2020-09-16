@@ -26,6 +26,6 @@ Current sources include:
 ## Miscellaneous Details & Advice
 - MSFVenom shellcode doesn't include a method of "returning" from itself, so by default it will not work properly in its own thread
 - You can install WinDBG Preview by (https://www.thewindowsclub.com/generate-direct-download-links-for-microsoft-store-apps):
-  + Grabbing the APPX (https://store.rg-adguard.net/)
+  + Grabbing the APPX (https://store.rg-adguard.net/) using the link from the windows store (https://www.microsoft.com/en-us/p/windbg-preview/9pgjgd53tn86)
   + MAYBE need to enable developer mode or sideloading apps
-  + Install the APPX with Add-AppxPackage
+  + Install the APPX by simply launching the APPX or with the Add-AppxPackage command
